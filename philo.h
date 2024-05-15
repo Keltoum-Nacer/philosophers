@@ -6,7 +6,7 @@
 /*   By: knacer <knacer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 10:29:04 by knacer            #+#    #+#             */
-/*   Updated: 2024/05/14 18:18:36 by knacer           ###   ########.fr       */
+/*   Updated: 2024/05/15 15:54:15 by knacer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,15 +35,19 @@ typedef struct s_philo
   pthread_t threads[200];
   pthread_t   monitor;
   int       thread_id;
-  pthread_mutex_t *forks;
+  pthread_mutex_t forks[200];
   pthread_mutex_t r_fork;
   pthread_mutex_t l_fork;
+  size_t  now;
 }t_philo;
 
 int   is_alpha(char **av);
 int	ft_atoi(const char *str);
 size_t	get_current_time(void);
 int	ft_usleep(size_t milli_sec);
+void    p_think(t_philo *philo);
+void    p_sleep(t_philo *philo);
+void    p_eat(t_philo   *philo);
 
 
 #endif

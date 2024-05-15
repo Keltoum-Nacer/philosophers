@@ -6,7 +6,7 @@
 /*   By: knacer <knacer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 11:48:24 by knacer            #+#    #+#             */
-/*   Updated: 2024/05/13 15:07:22 by knacer           ###   ########.fr       */
+/*   Updated: 2024/05/15 14:07:00 by knacer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	ft_usleep(size_t milli_sec)
 	size_t	start_time;
 
 	start_time = get_current_time();
-	while(get_current_time - start_time < milli_sec)
+	while(get_current_time() - start_time < milli_sec)
 		usleep(500);
 	return(0);
 }

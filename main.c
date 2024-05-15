@@ -6,7 +6,7 @@
 /*   By: knacer <knacer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 10:28:48 by knacer            #+#    #+#             */
-/*   Updated: 2024/05/14 11:24:49 by knacer           ###   ########.fr       */
+/*   Updated: 2024/05/15 20:15:38 by knacer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ void    init_data(t_philo *philo, int i)
             philo->thread_id = i;
             philo->is_eating = 0;
             philo->meals_eaten = 0;
+            philo->is_over = 0;
             philo->last_meal = get_current_time();
             philo->start_time = get_current_time();
             philo->l_fork = philo->forks[i];
@@ -55,20 +56,41 @@ void    init_data(t_philo *philo, int i)
             
 }
 
-// void    *monitor(void   *arg)
-// {
-//     t_philo *philo;
+void    init_forks(t_philo  *philo)
+{
+    int i = 1;
+    while( i <= philo->num_philo)
+    {
+        pthread_mutex_init(&philo->forks[i], NULL);
+        i++;
+    }
+}
 
-//     philo = (t_philo*)arg;
-//     while(philo->is_over == 0 || )
-// }
+void    *monitor(void   *arg)
+{
+    t_philo *philo;
+
+    philo = (t_philo*)arg;
+    while(1)
+    {
+        if(philo->time_to_eat < philo->last_meal && philo->is_eating = 0)
+            exit(1);
+    }
+}
 
 void    *routine(void   *arg)
 {
     t_philo *philo;
  
-     philo = (t_philo*)arg;
-        printf("Thread %d is running\n", philo->thread_id);
+    philo = (t_philo*)arg;
+    if(philo->thread_id % 2 == 0)
+        ft_usleep(1);
+    
+
+        p_think(philo);
+        p_sleep(philo);
+        p_eat(philo);
+        
     return NULL;
 }
 
@@ -81,14 +103,13 @@ int main(int ac, char **av)
         int i;
         
         check_input(av, &philo, ac);
-        philo.is_over = 0;
         pthread_mutex_init(&mutex, NULL);
-       // pthread_create(&philo.monitor, NULL, monitor, (void*)&philo);
-        //pthread_join(philo.monitor, NULL);
+        pthread_create(&philo.monitor, NULL, monitor, (void*)&philo);
+        pthread_join(philo.monitor, NULL);
+        init_forks(&philo);
         i = 1;
         while(i <= philo.num_philo)
         {
-            pthread_mutex_init(&philo.forks[i], NULL);
             init_data(&philo, i);
             pthread_create(&philo.threads[i], NULL, routine, (void*)&philo);
             pthread_join(philo.threads[i], NULL);
