@@ -3,120 +3,88 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: knacer <knacer@student.42.fr>              +#+  +:+       +#+        */
+/*   By: knacer <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/09 10:28:48 by knacer            #+#    #+#             */
-/*   Updated: 2024/05/15 20:15:38 by knacer           ###   ########.fr       */
+/*   Created: 2024/06/05 10:50:36 by knacer            #+#    #+#             */
+/*   Updated: 2024/06/05 10:50:38 by knacer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include"philo.h"
 
-void    print_error()
-{
-    printf("error, the arguments should be greater than 0 \n");
-    exit(1);
-}
 
-void    check_input(char **av, t_philo *philo, int ac)
-{
-    if (is_alpha(av) == 0)
-    {
-        philo->num_philo = ft_atoi(av[1]);
-        if(philo->num_philo < 1 || philo->num_philo > 200)
-        {
-            printf("error, number of philosophers should be less than 200 and greater than 1\n");
-            exit(1);
-        }
-        philo->time_to_die = ft_atoi(av[2]);
-        philo->time_to_eat = ft_atoi(av[3]);
-        philo->time_to_sleep = ft_atoi(av[4]);
-        if(ac == 6)
-            philo->nbr_of_eat = ft_atoi(av[5]);
-        else
-            philo->nbr_of_eat = -1;
-        if(philo->time_to_die <= 0 || philo->time_to_eat <= 0 || philo->time_to_sleep <= 0 )
-            print_error();
-    }
-}
-
-void    init_data(t_philo *philo, int i)
-{
-            philo->thread_id = i;
-            philo->is_eating = 0;
-            philo->meals_eaten = 0;
-            philo->is_over = 0;
-            philo->last_meal = get_current_time();
-            philo->start_time = get_current_time();
-            philo->l_fork = philo->forks[i];
-            if (i == 1)
-                philo->r_fork = philo->forks[philo->num_philo];
-            else
-                philo->r_fork = philo->forks[i - 1];
-            
-}
-
-void    init_forks(t_philo  *philo)
-{
-    int i = 1;
-    while( i <= philo->num_philo)
-    {
-        pthread_mutex_init(&philo->forks[i], NULL);
-        i++;
-    }
-}
-
-void    *monitor(void   *arg)
+void    *routine(void *arg)
 {
     t_philo *philo;
+    int death;
 
-    philo = (t_philo*)arg;
+    philo = (t_philo *)arg;
+    if (philo->data->num_philo == 1)
+    {
+        print_msg("%zu %d has taken a fork\n", philo);
+        ft_usleep(philo->data->time_to_die);
+        return (NULL);
+    }
+    if (philo->thread_id % 2 == 0)
+        ft_usleep(100);
+    // pthread_mutex_lock(&philo->data->dead);
+    // death = philo->data->is_over;
+    // pthread_mutex_unlock(&philo->data->dead);
+        //printf("--------->hey %d\n", death);
+    philo->last_meal = get_current_time();
+    while (!is_dead(philo))
+    {
+        p_eat(philo);
+        p_sleep(philo);
+        p_think(philo);
+    }
+    return (arg);
+}
+
+void    monitor(void *arg)
+{
+    t_philo *philo;
+    int i;
+    long    current_time;
+
+    philo = (t_philo *)arg;
+    //ft_usleep(100);
     while(1)
     {
-        if(philo->time_to_eat < philo->last_meal && philo->is_eating = 0)
-            exit(1);
+        //ft_usleep(10);
+    
+        if(philo_is_dead(philo) || they_ate(philo))
+            break;
     }
 }
 
-void    *routine(void   *arg)
-{
-    t_philo *philo;
- 
-    philo = (t_philo*)arg;
-    if(philo->thread_id % 2 == 0)
-        ft_usleep(1);
-    
-
-        p_think(philo);
-        p_sleep(philo);
-        p_eat(philo);
-        
-    return NULL;
-}
-
-int main(int ac, char **av)
+int main(int ac , char **av)
 {
     if (ac == 5 || ac == 6)
     {
-        t_philo philo;
-        pthread_mutex_t mutex;
+        t_philo philos[200];
+        t_data  sh_data;
         int i;
-        
-        check_input(av, &philo, ac);
-        pthread_mutex_init(&mutex, NULL);
-        pthread_create(&philo.monitor, NULL, monitor, (void*)&philo);
-        pthread_join(philo.monitor, NULL);
-        init_forks(&philo);
-        i = 1;
-        while(i <= philo.num_philo)
-        {
-            init_data(&philo, i);
-            pthread_create(&philo.threads[i], NULL, routine, (void*)&philo);
-            pthread_join(philo.threads[i], NULL);
+
+        check_input(ac, av, &sh_data);
+        init_locks(&sh_data, philos);
+        init_data(philos, &sh_data);
+        i = 0;
+        sh_data.start_time = get_current_time();
+        while (i < philos->data->num_philo)
+        { 
+            pthread_create(&philos[i].thread, NULL, &routine, &philos[i]);
             i++;
-        }  
+        }
+        monitor(philos);
+        i = 0;
+        while(i < philos->data->num_philo)
+        {
+            pthread_join(philos[i].thread, NULL);
+            i++;
+        }
+    
     }
     else
-    printf("error, enter six or seven arguments");
+        printf("error, enter five or six arguments\n");
 }
-
