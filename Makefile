@@ -2,7 +2,7 @@ NAME = philo
 CFILES = main.c philo_utils.c routine_utils.c init.c monitor_utils.c
 OFILES = $(CFILES:.c=.o)
 CC = cc
-CFILAGS = -Wall -Wextra -Werror -g3 -fsanitize=thread
+CFILAGS = -Wall -Wextra -Werror #-g3 -fsanitize=thread
 
 all: $(NAME)
 

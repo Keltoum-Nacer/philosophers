@@ -10,29 +10,29 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include"philo.h"
+#include "philo.h"
 
-int   is_alpha(char **av)
+int	is_alpha(char **av)
 {
-    int i;
-    int j;
+	int	i;
+	int	j;
 
-    i = 1;
-    while(av[i])
-    {
-    	j = 0;
-        while(av[i][j])
-        {
-            if (av[i][j] < '0' || av[i][j] > '9')
-            {
-                printf("error, you have to enter the right arguments\n");
-                return(1);   
-            }
-            j++;
-        }
-        i++;
-    } 
-    return(0);   
+	i = 1;
+	while (av[i])
+	{
+		j = 0;
+		while (av[i][j])
+		{
+			if (av[i][j] < '0' || av[i][j] > '9')
+			{
+				printf("error, you have to enter the right arguments\n");
+				return (1);
+			}
+			j++;
+		}
+		i++;
+	}
+	return (0);
 }
 
 int	ft_atoi(const char *str)
@@ -62,24 +62,24 @@ int	ft_atoi(const char *str)
 	return (s * x);
 }
 
-void    print_error(int i)
+void	print_error(int i)
 {
-    if (i == 0)
-        printf("error, the arguments should be greater than 0 \n");
-    else if (i == 1)
-        printf("error, number of philosophers should be less than 200 and greater than 1\n");
-    else if (i == 2)
-        printf("pthread failed\n");
-    exit(1);
+	if (i == 0)
+		printf("error, the arguments should be greater than 0 \n");
+	else if (i == 1)
+		printf("error,number of philosophers should be less than 200\n");
+	else if (i == 2)
+		printf("pthread failed\n");
+	exit(1);
 }
 
 size_t	get_current_time(void)
 {
 	struct timeval	time;
 
-	if(gettimeofday(&time, NULL) == -1)
-		write(2, "gettimeofday()failed\n", 22);
-	return(time.tv_sec * 1000 + time.tv_usec / 1000);
+	if (gettimeofday(&time, NULL) == -1)
+		printf("gettimeofday()failed\n");
+	return (time.tv_sec * 1000 + time.tv_usec / 1000);
 }
 
 int	ft_usleep(size_t milli_sec)
@@ -87,7 +87,7 @@ int	ft_usleep(size_t milli_sec)
 	size_t	start_time;
 
 	start_time = get_current_time();
-	while(get_current_time() - start_time < milli_sec)
+	while (get_current_time() - start_time < milli_sec)
 		usleep(500);
-	return(0);
+	return (0);
 }
