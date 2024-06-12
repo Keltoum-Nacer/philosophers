@@ -6,7 +6,7 @@
 /*   By: knacer <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 10:50:36 by knacer            #+#    #+#             */
-/*   Updated: 2024/06/05 10:50:38 by knacer           ###   ########.fr       */
+/*   Updated: 2024/06/10 21:32:13 by knacer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	*routine(void *arg)
 	if (philo->data->num_philo == 1)
 	{
 		print_msg("%zu %d has taken a fork\n", philo);
-        ft_usleep(philo->data->time_to_die);
+		ft_usleep(philo->data->time_to_die);
 		return (NULL);
 	}
 	if (philo->thread_id % 2 == 0)
@@ -46,7 +46,7 @@ void	*routine(void *arg)
 		p_eat(philo);
 		p_sleep(philo);
 		p_think(philo);
-        ft_usleep(10);
+		ft_usleep(1);
 	}
 	return (arg);
 }
@@ -58,7 +58,6 @@ void	monitor(void *arg)
 	long	current_time;
 
 	philo = (t_philo *)arg;
-    //ft_usleep(10);
 	while (1)
 	{
 		if (philo_is_dead(philo) || they_ate(philo))
@@ -74,20 +73,22 @@ int	main(int ac, char **av)
 
 	if (ac == 5 || ac == 6)
 	{
-		check_input(ac, av, &sh_data);
-		init_locks(&sh_data, philos);
-		init_data(philos, &sh_data);
-		i = 0;
-		while (i < philos->data->num_philo)
+		if (check_input(ac, av, &sh_data))
 		{
-			pthread_create(&philos[i].thread, NULL, &routine, &philos[i]);
-			i++;
+			init_locks(&sh_data, philos);
+			init_data(philos, &sh_data);
+			i = 0;
+			while (i < philos->data->num_philo)
+			{
+				pthread_create(&philos[i].thread, NULL, &routine, &philos[i]);
+				i++;
+			}
+			monitor(philos);
+			i = 0;
+			while (i < philos->data->num_philo)
+				pthread_join(philos[i++].thread, NULL);
+			destroy_locks(&sh_data);
 		}
-		monitor(philos);
-		i = 0;
-		while (i < philos->data->num_philo)
-			pthread_join(philos[i++].thread, NULL);
-		destroy_locks(&sh_data);
 	}
 	else
 		printf("error, enter five or six arguments\n");

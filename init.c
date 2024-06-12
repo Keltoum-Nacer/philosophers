@@ -12,7 +12,7 @@
 
 #include "philo.h"
 
-void	check_input(int ac, char **av, t_data *sh_data)
+int	check_input(int ac, char **av, t_data *sh_data)
 {
 	if (is_alpha(av) == 0)
 	{
@@ -29,7 +29,9 @@ void	check_input(int ac, char **av, t_data *sh_data)
 		if (sh_data->time_to_die <= 0 || sh_data->time_to_eat <= 0
 			|| sh_data->time_to_sleep <= 0)
 			print_error(0);
+		return (1);
 	}
+	return (0);
 }
 
 void	init_data(t_philo *philo, t_data *sh_data)

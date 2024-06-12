@@ -23,14 +23,13 @@ int	philo_is_dead(t_philo *philo)
 		if (get_current_time() - philo[i].last_meal >= philo->data->time_to_die)
 		{
 			pthread_mutex_unlock(&philo->data->meal);
-            //ft_usleep(60);
-			//print_msg("%zu %d is dead\n", philo);
 			pthread_mutex_lock(&philo->data->dead);
 			philo->data->is_over = 1;
 			pthread_mutex_unlock(&philo->data->dead);
-            pthread_mutex_lock(&philo->data->write);
-            printf("%zu %d is dead\n", get_current_time() - philo->data->start_time, philo[i].thread_id);
-            pthread_mutex_unlock(&philo->data->write);
+			pthread_mutex_lock(&philo->data->write);
+			printf("%zu %d is dead\n", get_current_time()
+				- philo->data->start_time, philo[i].thread_id);
+			pthread_mutex_unlock(&philo->data->write);
 			return (1);
 		}
 		pthread_mutex_unlock(&philo->data->meal);

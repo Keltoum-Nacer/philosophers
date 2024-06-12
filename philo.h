@@ -50,7 +50,7 @@ typedef struct s_philo
 
 int					is_alpha(char **av);
 int					ft_atoi(const char *str);
-void				check_input(int ac, char **av, t_data *manager);
+int					check_input(int ac, char **av, t_data *manager);
 void				init_locks(t_data *manager, t_philo *philos);
 void				print_error(int i);
 size_t				get_current_time(void);

@@ -23,7 +23,7 @@ int	is_alpha(char **av)
 		j = 0;
 		while (av[i][j])
 		{
-			if (av[i][j] < '0' || av[i][j] > '9')
+			if ((av[i][j] < '0' || av[i][j] > '9') && (av[i][j] != '+'))
 			{
 				printf("error, you have to enter the right arguments\n");
 				return (1);
